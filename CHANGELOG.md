@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Add support for multiple checkout-ui apps, required for clients who have heavily edited the checkout flow
+- Add support for multiple checkout-ui apps, required for clients who have heavily edited the checkout flow 
 
 ## [0.4.1] - 2021-07-15
 
