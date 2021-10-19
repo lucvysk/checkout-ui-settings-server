@@ -43,7 +43,7 @@ export async function getSettingsFromContext(ctx: Context, next: () => Promise<a
 
 
     if (settingsDeclarer === 'vtex.checkout-ui-custom') {
-      settingFile = allSettingsFromDeclarer[file]
+      settingFile += allSettingsFromDeclarer[file]
 
       try {
         const field = fileType === 'text/css' ? 'cssBuild' : 'javascriptBuild'
@@ -58,7 +58,7 @@ export async function getSettingsFromContext(ctx: Context, next: () => Promise<a
           })
 
         if (vbFile) {
-          settingFile = parseBuffer(vbFile)
+          settingFile += parseBuffer(vbFile)
         }
 
         if (!vbFile) {
@@ -78,7 +78,7 @@ export async function getSettingsFromContext(ctx: Context, next: () => Promise<a
               },
             })
             if (mdFiles && mdFiles.length) {
-              settingFile = mdFiles[0][field]
+              settingFile += mdFiles[0][field]
             }
           }
         }
