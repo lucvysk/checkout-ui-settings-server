@@ -43,9 +43,7 @@ export async function getSettingsFromContext(
     )
   }
 
-  for (let i = 0; i < ctx.vtex.settings.length; i++) {
-    const settingsObject = ctx.vtex.settings[i] ? ctx.vtex.settings[i] : null
-
+  for (const settingsObject of ctx.vtex.settings) {
     const settingsDeclarer = removeVersionFromAppId(settingsObject.declarer)
     const allSettingsFromDeclarer = settingsObject[settingsDeclarer]
 
