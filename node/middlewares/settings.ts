@@ -58,7 +58,7 @@ export async function getSettingsFromContext(
         const vbFile = await vbase
           .getFile('checkoutuicustom', `${workspace}-${field}`)
           .then((res: any) => res.data)
-          .catch(error => {
+          .catch((error: { response: { status: number } }) => {
             if (!error.response || error.response.status !== 404) {
               logger.error({
                 message: `Error retrieving VBase file ${workspace}-${field}`,
