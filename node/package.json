@@ -10,7 +10,8 @@
     "@vtex/test-tools": "^1.0.0",
     "tslint": "^5.14.0",
     "tslint-config-vtex": "^2.1.0",
-    "typescript": "3.9.7"
+    "typescript": "3.9.7",
+    "vtex.checkout-ui-settings-server": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.checkout-ui-settings-server@0.4.1/public/_types/react"
   },
   "scripts": {
     "lint": "tsc --noEmit --pretty && tslint -c tslint.json --fix './**/*.ts'"
