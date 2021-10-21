@@ -1,7 +1,7 @@
-/* eslint-disable no-await-in-loop */
 import { removeVersionFromAppId } from '@vtex/api'
 
 import { LINKED } from '../constants'
+import { getCheckoutUICustom } from './checkoutUiCustom'
 
 function parseFileFromURL(url: string) {
   const [, , maybeFileWithQuery] = url.split('/')
@@ -10,9 +10,6 @@ function parseFileFromURL(url: string) {
   return maybeFile
 }
 
-const parseBuffer = (buffer: Buffer) => buffer.toString()
-
-const DATA_ENTITY = 'checkoutcustom'
 const CACHE = 60
 
 export async function getSettingsFromContext(
@@ -20,9 +17,8 @@ export async function getSettingsFromContext(
   next: () => Promise<any>
 ) {
   const {
-    clients: { masterdata, vbase },
     request: { url },
-    vtex: { workspace, production, logger },
+    vtex: { production },
   } = ctx
 
   const file = parseFileFromURL(url)
@@ -34,8 +30,8 @@ export async function getSettingsFromContext(
   const fileType =
     file.split('.').pop() === 'css' ? 'text/css' : 'text/javascript'
 
-  let mdFiles: any = []
   let settingFile = ''
+  const promisses = []
 
   if (!ctx.vtex.settings) {
     throw new Error(
@@ -48,52 +44,8 @@ export async function getSettingsFromContext(
     const allSettingsFromDeclarer = settingsObject[settingsDeclarer]
 
     if (settingsDeclarer === 'vtex.checkout-ui-custom') {
-      settingFile += String(allSettingsFromDeclarer[file])
-
       try {
-        const field = fileType === 'text/css' ? 'cssBuild' : 'javascriptBuild'
-
-        const vbFile = await vbase
-          .getFile('checkoutuicustom', `${workspace}-${field}`)
-          .then((res: any) => res.data)
-          .catch((error: { response: { status: number } }) => {
-            if (!error.response || error.response.status !== 404) {
-              logger.error({
-                message: `Error retrieving VBase file ${workspace}-${field}`,
-              })
-            }
-
-            return null
-          })
-
-        if (vbFile) {
-          settingFile += parseBuffer(vbFile)
-        }
-
-        if (!vbFile) {
-          const schemas = await masterdata
-            .getSchemas()
-            .then((res: any) => res.data)
-
-          if (schemas?.length) {
-            mdFiles = await masterdata.searchDocuments({
-              dataEntity: DATA_ENTITY,
-              fields: [field],
-              sort: 'creationDate DESC',
-              schema: schemas.sort((a: any, b: any) => {
-                return a.name > b.name ? -1 : 1
-              })[0].name,
-              where: `workspace=${workspace}`,
-              pagination: {
-                page: 1,
-                pageSize: 1,
-              },
-            })
-            if (mdFiles?.length) {
-              settingFile += String(mdFiles[0][field])
-            }
-          }
-        }
+        promisses.push(getCheckoutUICustom(ctx, fileType))
       } catch (e) {
         throw new Error(`Error getting ${file} from MD or VB.`)
       }
@@ -104,6 +56,12 @@ export async function getSettingsFromContext(
       }
     }
   }
+
+  await Promise.all(promisses).then((res: any) => {
+    res.forEach((element: string) => {
+      settingFile += element
+    })
+  })
 
   if (!settingFile) {
     throw new Error(`Error getting setting ${file} from context.`)
