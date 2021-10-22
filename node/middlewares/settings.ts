@@ -68,6 +68,7 @@ export async function getSettingsFromContext(
     })
   })
 
+  // If promise file is empty (hasn't been published), it will load the file available from the link
   settingFile += promiseFile !== '' ? promiseFile : linkSettingFile
 
   if (!settingFile) {
