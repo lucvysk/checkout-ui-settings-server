@@ -39,12 +39,15 @@ export async function getSettingsFromContext(
     )
   }
 
+  let linkSettingFile = ''
+
   for (const settingsObject of ctx.vtex.settings) {
     const settingsDeclarer = removeVersionFromAppId(settingsObject.declarer)
     const allSettingsFromDeclarer = settingsObject[settingsDeclarer]
 
     if (settingsDeclarer === 'vtex.checkout-ui-custom') {
       try {
+        linkSettingFile = String(allSettingsFromDeclarer[file])
         promisses.push(getCheckoutUICustom(ctx, fileType))
       } catch (e) {
         throw new Error(`Error getting ${file} from MD or VB.`)
@@ -57,11 +60,15 @@ export async function getSettingsFromContext(
     }
   }
 
+  let promiseFile = ''
+
   await Promise.all(promisses).then((res: any) => {
     res.forEach((element: string) => {
-      settingFile += element
+      promiseFile += element
     })
   })
+
+  settingFile += promiseFile !== '' ? promiseFile : linkSettingFile
 
   if (!settingFile) {
     throw new Error(`Error getting setting ${file} from context.`)
