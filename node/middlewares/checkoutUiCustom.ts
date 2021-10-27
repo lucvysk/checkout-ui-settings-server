@@ -30,6 +30,9 @@ export async function getCheckoutUICustom(ctx: Context, fileType: string) {
   }
 
   if (!vbFile) {
+    logger.info({
+      message: 'checkout-ui-custom fallback to MD',
+    })
     const schemas = await masterdata.getSchemas().then((res: any) => res.data)
 
     if (schemas?.length) {
