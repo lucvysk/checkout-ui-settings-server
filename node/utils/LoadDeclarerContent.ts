@@ -12,11 +12,12 @@ export async function loadDeclarerContent(
   const settingsDeclarer = removeVersionFromAppId(settingsObject.declarer)
   let settingFile = `\r\n/* source: <${settingsDeclarer}> */\r\n`
   const allSettingsFromDeclarer = settingsObject[settingsDeclarer]
-  const linkSettingFile = String(allSettingsFromDeclarer[file])
 
   if (settingsDeclarer === 'vtex.checkout-ui-custom') {
     try {
-      settingFile += await getCheckoutUICustom(ctx, fileType)
+      settingFile +=
+        (await getCheckoutUICustom(ctx, fileType)) ||
+        String(allSettingsFromDeclarer[file])
     } catch (e) {
       throw new Error(`Error getting ${file} from MD or VB.`)
     }
@@ -24,5 +25,5 @@ export async function loadDeclarerContent(
     settingFile += String(allSettingsFromDeclarer[file])
   }
 
-  return linkSettingFile ?? settingFile
+  return settingFile
 }
