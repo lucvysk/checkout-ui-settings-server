@@ -1,14 +1,20 @@
-import { method, ParamsContext, RecorderState, Service, ServiceContext, ClientsConfig } from '@vtex/api'
+import type {
+  ClientsConfig,
+  ParamsContext,
+  RecorderState,
+  ServiceContext,
+} from '@vtex/api'
+import { method, Service } from '@vtex/api'
 
-import { enabledService } from './middlewares/enabled'
-import { getSettingsFromContext } from './middlewares/settings'
-import { saveVB } from './middlewares/savevb'
 import { Clients } from './clients'
+import { enabledService } from './middlewares/enabled'
+import { saveVB } from './middlewares/savevb'
+import { getSettingsFromContext } from './middlewares/settings'
 
 const TIMEOUT_MS = 800
 
 declare global {
-  type Context = ServiceContext<Clients, RecorderState, ParamsContext>
+  type Context = ServiceContext<Clients>
 }
 
 const clients: ClientsConfig<Clients> = {
@@ -17,7 +23,7 @@ const clients: ClientsConfig<Clients> = {
     masterdata: {
       retries: 2,
       timeout: TIMEOUT_MS,
-    }
+    },
   },
 }
 
