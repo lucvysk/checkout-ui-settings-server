@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.4.3] - 2021-10-27
+
 ### Fixed
 - Allow multiple apps to use `checkout-ui-settings-server`
 ## [0.4.2] - 2021-10-18
